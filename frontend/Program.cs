@@ -18,7 +18,7 @@ class Program
             Console.WriteLine("Current Time: " + DateTime.Now);
 
             // Ping well-known domains and show their response times
-            string[] domains = {"stentijhuis.nl", "google.com", "github.com", "microsoft.com"};
+            string[] domains = {"mooindag.nl", "stentijhuis.nl", "google.com", "github.com", "microsoft.com"};
             Console.WriteLine("\nLive Response Times:");
 
             foreach (string domain in domains)
