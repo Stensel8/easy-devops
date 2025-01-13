@@ -19,7 +19,7 @@ $RepoDirectory = "C:/easy-devops"
 function Test-Command {
     param([string]$Command)
     $CommandPath = Get-Command $Command -ErrorAction SilentlyContinue
-    return ($CommandPath -ne $null)
+    return ($null -ne $CommandPath)
 }
 
 # Function to verify SHA512 checksum
@@ -34,7 +34,7 @@ function Test-Checksum {
 }
 
 # Helper function to pause on error or completion
-function Pause-Script {
+function Wait-Script {
     Write-Host "`nPress ENTER to continue or close this window manually..."
     [void][System.Console]::ReadLine()
 }
@@ -73,7 +73,7 @@ if ($InstalledSdks -notmatch "8.0") {
             Write-Host "Verifying checksum..." -ForegroundColor Cyan
             if (-not (Test-Checksum -FilePath $DotnetInstallerPath -ExpectedChecksum $DotnetSdkChecksum)) {
                 Write-Host "Checksum verification failed for .NET SDK installer. Please verify the URL and checksum." -ForegroundColor Red
-                Pause-Script
+                Wait-Script
                 return
             }
 
