@@ -39,15 +39,6 @@ function Wait-Script {
     [void][System.Console]::ReadLine()
 }
 
-# Function to refresh environment variables in the current session
-function Update-Environment {
-    Write-Host "Refreshing environment variables..." -ForegroundColor Cyan
-    $machinePath = [System.Environment]::GetEnvironmentVariable("Path", "Machine")
-    $userPath = [System.Environment]::GetEnvironmentVariable("Path", "User")
-    $env:PATH = "$machinePath;$userPath"
-    Write-Host "Environment variables refreshed." -ForegroundColor Green
-}
-
 # Print detected .NET SDKs and Runtimes
 Write-Host "Detecting installed .NET versions..." -ForegroundColor Cyan
 try {
@@ -73,7 +64,6 @@ if ($InstalledSdks -notmatch "8.0") {
     try {
         Start-Process -FilePath "winget" -ArgumentList "install --id Microsoft.DotNet.SDK.8 --silent --accept-package-agreements --accept-source-agreements" -Wait -NoNewWindow
         Write-Host ".NET SDK 8 installed successfully via winget." -ForegroundColor Green
-        Update-Environment
     } catch {
         Write-Host "Failed to install .NET SDK using winget. Falling back to manual installation (BitsTransfer)..." -ForegroundColor Red
         try {
@@ -90,11 +80,10 @@ if ($InstalledSdks -notmatch "8.0") {
             Write-Host "Installing .NET SDK..." -ForegroundColor Cyan
             Start-Process -FilePath $DotnetInstallerPath -ArgumentList "/quiet" -Wait
             Write-Host ".NET SDK 8 installed successfully." -ForegroundColor Green
-            Refresh-Environment
         } catch {
             Write-Host "Manual download/install for .NET SDK also failed. Please install .NET 8 SDK manually from:" -ForegroundColor Red
             Write-Host "https://dotnet.microsoft.com/en-us/download" -ForegroundColor Red
-            Wait-Script
+            Pause-Script
             return
         }
     }
@@ -111,7 +100,6 @@ if ($InstalledRuntimes -notmatch "8.0") {
     try {
         Start-Process -FilePath "winget" -ArgumentList "install --id Microsoft.DotNet.Runtime.8 --silent --accept-package-agreements --accept-source-agreements" -Wait -NoNewWindow
         Write-Host ".NET Runtime 8 installed successfully via winget." -ForegroundColor Green
-        Refresh-Environment
     } catch {
         Write-Host "Failed to install .NET Runtime using winget. Falling back to manual installation (BitsTransfer)..." -ForegroundColor Red
         try {
@@ -121,11 +109,10 @@ if ($InstalledRuntimes -notmatch "8.0") {
             Write-Host "Installing .NET Runtime 8..." -ForegroundColor Cyan
             Start-Process -FilePath $DotnetInstallerPath -ArgumentList "/quiet" -Wait
             Write-Host ".NET Runtime 8 installed successfully." -ForegroundColor Green
-            Refresh-Environment
         } catch {
             Write-Host "Manual download/install for .NET Runtime also failed. Please install .NET 8 Runtime manually from:" -ForegroundColor Red
             Write-Host "https://dotnet.microsoft.com/en-us/download" -ForegroundColor Red
-            Wait-Script
+            Pause-Script
             return
         }
     }
@@ -142,7 +129,6 @@ if (-not (Test-Command "git")) {
     try {
         Start-Process -FilePath "winget" -ArgumentList "install --id Git.Git --silent --accept-package-agreements --accept-source-agreements" -Wait -NoNewWindow
         Write-Host "Git installed successfully via winget." -ForegroundColor Green
-        Refresh-Environment
     } catch {
         Write-Host "Failed to install Git via winget. Attempting manual download..." -ForegroundColor Red
         try {
@@ -152,11 +138,10 @@ if (-not (Test-Command "git")) {
             Write-Host "Launching the Git installer. Please follow the setup wizard..." -ForegroundColor Cyan
             Start-Process -FilePath $GitInstallerPath -Wait
 
-            Write-Host "Git setup was launched. Refreshing environment variables..." -ForegroundColor Yellow
-            Refresh-Environment
+            Write-Host "Git setup was launched. Make sure to complete it manually." -ForegroundColor Yellow
         } catch {
             Write-Host "Manual download/install for Git also failed. Please install Git manually from: https://git-scm.com" -ForegroundColor Red
-            Wait-Script
+            Pause-Script
             return
         }
     }
@@ -165,8 +150,8 @@ if (-not (Test-Command "git")) {
 }
 
 Write-Host "`n-----------------------------------------------------------------------------------"
-Write-Host "If you recently installed or updated .NET or Git, the environment has been refreshed."
-Write-Host "You may need to restart your shell or your operating system for some changes to take full effect."
+Write-Host "If you recently installed or updated .NET or Git, you may need to restart your shell"
+Write-Host "or your operating system for the environment variables to refresh."
 Write-Host "-----------------------------------------------------------------------------------`n"
 
 #--------------------------------------------------------------------------------------------
@@ -180,7 +165,7 @@ if (-not (Test-Path -Path $RepoDirectory)) {
     } catch {
         Write-Host "Failed to clone the repository. Please check your Git installation or network connection." -ForegroundColor Red
         Write-Host "You can try restarting your shell or PC and then run the script again." -ForegroundColor Yellow
-        Wait-Script
+        Pause-Script
         return
     }
 } else {
@@ -194,10 +179,7 @@ Write-Host "`nRunning the easy-devops app..." -ForegroundColor Cyan
 $FrontendAppPath = Join-Path $RepoDirectory "frontend"
 
 # Ensure .NET is available in the current session
-if (-not (Test-Command "dotnet")) {
-    Write-Host ".NET is not available in the current session. Attempting to refresh environment variables..." -ForegroundColor Yellow
-    Refresh-Environment
-}
+$env:PATH += ";C:\Program Files\dotnet"
 
 Set-Location -Path $FrontendAppPath
 if (Test-Path "$FrontendAppPath\*.csproj") {
@@ -207,14 +189,14 @@ if (Test-Path "$FrontendAppPath\*.csproj") {
     } catch {
         Write-Host "Failed to run the easy-devops app. Please check your setup." -ForegroundColor Red
         Write-Host "Possible issues include a missing csproj file or broken dependencies." -ForegroundColor Red
-        Wait-Script
+        Pause-Script
         return
     }
 } else {
     Write-Host "No .csproj file found in $FrontendAppPath. Please check your project structure." -ForegroundColor Red
-    Wait-Script
+    Pause-Script
     return
 }
 
 Write-Host "`nScript completed." -ForegroundColor Green
-Wait-Script
+Pause-Script
