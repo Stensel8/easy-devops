@@ -1,49 +1,106 @@
-// See https://aka.ms/new-console-template for more information
-
-using System.Diagnostics;
 using System.Net.NetworkInformation;
+using System.Drawing;
+using Console = Colorful.Console;
 
 class Program
 {
     static void Main(string[] args)
     {
-        // Start a loop for the live clock and ping updates
         while (true)
         {
             Console.Clear();
-            Console.WriteLine("Welcome to Easy-DevOps!");
-            Console.WriteLine("\n ITM-550600\n");
 
-            // Display the current time
-            Console.WriteLine("Current Time: " + DateTime.Now);
+            // Print ASCII art logo
+            PrintAsciiArtLogo();
 
-            // Ping well-known domains and show their response times
-            string[] domains = {"mooindag.nl", "stentijhuis.nl", "google.com", "github.com", "microsoft.com"};
-            Console.WriteLine("\nLive Response Times:");
+            // Print the banner
+            PrintRainbowText("Case Study ITM");
+            PrintRainbowText("Developed by Sten Tijhuis");
+            PrintRainbowText("Student ID: 550600");
+            PrintRainbowText("Version V1.0");
 
-            foreach (string domain in domains)
+            Console.WriteLine("\nWelcome to Easy-DevOps!", Color.White);
+            Console.WriteLine("\nITM-550600\n", Color.White);
+
+            // Display the current time (hours and minutes only)
+            string time = DateTime.Now.ToString("HH:mm");
+            Console.WriteLine($"Current Time: {time}", Color.LightGreen);
+
+            // Display ping results
+            DisplayPing();
+
+            // Refresh every 10 seconds
+            Thread.Sleep(10000);
+        }
+    }
+
+    static void DisplayPing()
+    {
+        string[] domains = { "mooindag.nl", "stentijhuis.nl", "google.com", "github.com", "microsoft.com", "www.saxion.nl" };
+
+        Console.WriteLine("\nLive Response Times:", Color.Yellow);
+
+        foreach (string domain in domains)
+        {
+            try
             {
-                try
-                {
-                    Ping ping = new Ping();
-                    PingReply reply = ping.Send(domain);
+                Ping ping = new Ping();
+                PingReply reply = ping.Send(domain);
 
-                    if (reply.Status == IPStatus.Success)
-                    {
-                        Console.WriteLine($"  {domain}: {reply.RoundtripTime} ms");
-                    }
-                    else
-                    {
-                        Console.WriteLine($"  {domain}: Unreachable");
-                    }
-                }
-                catch (Exception ex)
+                if (reply.Status == IPStatus.Success)
                 {
-                    Console.WriteLine($"  {domain}: Error ({ex.Message})");
+                    Console.WriteLine($"  {domain}: {reply.RoundtripTime} ms", Color.Cyan);
+                }
+                else
+                {
+                    Console.WriteLine($"  {domain}: Unreachable", Color.Red);
                 }
             }
-            // Wait for 5 seconds before refreshing
-            Thread.Sleep(5000);
+            catch (Exception ex)
+            {
+                Console.WriteLine($"  {domain}: Error ({ex.Message})", Color.Red);
+            }
         }
+    }
+
+    static void PrintRainbowText(string text)
+    {
+        // Define smooth rainbow colors
+        Color[] rainbowColors = {
+            Color.Red, Color.OrangeRed, Color.Orange,
+            Color.Yellow, Color.GreenYellow, Color.Green,
+            Color.Blue, Color.Indigo, Color.Violet
+        };
+
+        int colorIndex = 0;
+        foreach (char c in text)
+        {
+            // Print each character with a rainbow color
+            Console.Write(c, rainbowColors[colorIndex]);
+            colorIndex = (colorIndex + 1) % rainbowColors.Length;
+        }
+
+        Console.WriteLine(); // Move to the next line after the text
+    }
+
+    static void PrintAsciiArtLogo()
+    {
+        // ASCII art logo for "ITM CASE"
+        string[] logoLines = {
+            " __  .___________..___  ___.      ______     ___           _______. _______ ",
+            "|  | |           ||   \\/   |     /      |   /   \\         /       ||   ____|",
+            "|  | `---|  |----`|  \\  /  |    |  ,----'  /  ^  \\       |   (----`|  |__   ",
+            "|  |     |  |     |  |\\/|  |    |  |      /  /_\\  \\       \\   \\    |   __|  ",
+            "|  |     |  |     |  |  |  |    |  `----./  _____  \\  .----)   |   |  |____ ",
+            "|__|     |__|     |__|  |__|     \\______/__/     \\__\\ |_______/    |_______|",
+            "                                                                             "
+        };
+
+        foreach (string line in logoLines)
+        {
+            Console.WriteLine(line, Color.Cyan); // Use Cyan for the logo
+        }
+
+        Console.WriteLine(); // Add spacing after the logo
     }
 }
