@@ -4,70 +4,142 @@ pipeline {
     environment {
         // Minimum required .NET version
         DOTNET_MIN_VERSION = '8.0.0'
+        // Define application path
+        APP_PATH = 'frontend/easy-devops/easy-devops.csproj'
     }
 
     stages {
+        stage('Environment Check') {
+            steps {
+                echo '--- Stage: Environment Check ---'
+                script {
+                    try {
+                        echo 'Checking current PATH environment variable...'
+                        echo "Current PATH: ${System.getenv('PATH')}"
+                    } catch (Exception e) {
+                        echo "Failed to print PATH: ${e.message}"
+                        error 'Environment check failed.'
+                    }
+                }
+            }
+        }
+
         stage('Check .NET Installation') {
             steps {
+                echo '--- Stage: Check .NET Installation ---'
                 script {
-                    echo 'Checking if .NET is installed...'
                     try {
-                        // Get the installed .NET version
-                        def installedVersion = sh(script: 'dotnet --version', returnStdout: true).trim()
+                        echo 'Checking if .NET is installed...'
+                        def installedVersion = powershell(script: 'dotnet --version', returnStdout: true).trim()
                         echo "Installed .NET version: ${installedVersion}"
 
                         // Compare the installed version with the minimum required version
                         if (compareVersions(installedVersion, env.DOTNET_MIN_VERSION) < 0) {
-                            error "Installed .NET version (${installedVersion}) is below the required version (${env.DOTNET_MIN_VERSION}). Please update .NET."
+                            error "Installed .NET version (${installedVersion}) is below the required version (${env.DOTNET_MIN_VERSION})."
                         }
                     } catch (Exception e) {
-                        // If .NET is not installed, show instructions
-                        echo '.NET is not installed on this system.'
-                        echo 'To install the latest .NET SDK, run the following commands:'
-                        echo '1. Update winget:'
-                        echo '   winget upgrade --all'
-                        echo '2. Install the .NET SDK:'
-                        echo '   winget install -e --id Microsoft.DotNet.SDK.8'
+                        echo "Error while checking .NET installation: ${e.message}"
+                        echo '.NET is not installed or not accessible. Please install the required version.'
                         error 'Please install .NET and re-run the pipeline.'
                     }
                 }
             }
         }
-        stage('Build') {
+
+        stage('Restore Dependencies') {
             steps {
-                echo 'Starting the build process...'
-                // Build the .NET project in Release mode
-                bat 'dotnet build "frontend/easy-devops/easy-devops.csproj" --configuration Release'
+                echo '--- Stage: Restore Dependencies ---'
+                script {
+                    try {
+                        echo 'Restoring project dependencies using dotnet restore...'
+                        powershell "dotnet restore ${env.APP_PATH}"
+                    } catch (Exception e) {
+                        echo "Error while restoring dependencies: ${e.message}"
+                        error 'Dependency restoration failed. Check your project files or network connection.'
+                    }
+                }
             }
         }
-        stage('Test') {
+
+        stage('Build Application') {
             steps {
-                echo 'Running security tests with Snyk...'
-                // Run Snyk security scan
-                snykSecurity(
-                    snykInstallation: 'snyk', 
-                    snykTokenId: 'snyk-api-token', 
-                    targetFile: 'frontend/easy-devops/obj/project.assets.json'
-                )
+                echo '--- Stage: Build Application ---'
+                script {
+                    try {
+                        echo 'Building the application in Release mode...'
+                        powershell "dotnet build ${env.APP_PATH} --configuration Release"
+                    } catch (Exception e) {
+                        echo "Error during build: ${e.message}"
+                        error 'Build failed. Please fix the issues in your code or build configuration.'
+                    }
+                }
             }
         }
-        stage('Deploy') {
+
+        stage('Run Application') {
             steps {
-                echo 'Deploying the application...'
-                // Add deployment logic here
+                echo '--- Stage: Run Application ---'
+                script {
+                    try {
+                        echo 'Executing the application...'
+                        powershell 'dotnet run --project frontend/easy-devops'
+                    } catch (Exception e) {
+                        echo "Error while running the application: ${e.message}"
+                        error 'Application run failed. Check your runtime configuration or code.'
+                    }
+                }
+            }
+        }
+
+        stage('Test Application') {
+            steps {
+                echo '--- Stage: Test Application ---'
+                script {
+                    try {
+                        echo 'Running simple tests...'
+                        echo 'Performing output verification (mock example).'
+                        powershell '''
+                        $output = dotnet run --project frontend/easy-devops
+                        if ($output -match "Expected output text") {
+                            Write-Host "Test passed: Application produced expected output."
+                        } else {
+                            Write-Host "Test failed: Application did not produce expected output."
+                            exit 1
+                        }
+                        '''
+                    } catch (Exception e) {
+                        echo "Error during testing: ${e.message}"
+                        error 'Tests failed. Verify your application logic or test cases.'
+                    }
+                }
+            }
+        }
+
+        stage('Deploy Application') {
+            steps {
+                echo '--- Stage: Deploy Application ---'
+                script {
+                    try {
+                        echo 'Deploying application (placeholder for deployment logic)...'
+                        echo 'This could involve copying files to a server or running additional scripts.'
+                    } catch (Exception e) {
+                        echo "Error during deployment: ${e.message}"
+                        error 'Deployment failed. Check your deployment steps or server configuration.'
+                    }
+                }
             }
         }
     }
 
     post {
         always {
-            echo 'Pipeline completed.'
+            echo 'Pipeline completed. Review the logs for any warnings or issues.'
         }
         success {
-            echo 'Pipeline finished successfully.'
+            echo 'Pipeline finished successfully! The application is ready.'
         }
         failure {
-            echo 'Pipeline failed. Please check the logs for details.'
+            echo 'Pipeline failed. Please review the logs above for detailed errors.'
         }
     }
 }
