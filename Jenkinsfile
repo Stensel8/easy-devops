@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOTNET_PROJECT = 'frontend/easy-devops.csproj' // Path to your .NET project
-        SNYK_TOKEN_ID = '378e461d-58a6-4c18-8f91-d5fbdab9f3a3' // Snyk API Token ID in Jenkins credentials
+        SNYK_TOKEN_ID = 'f41d9fdc-ea31-41a6-8db5-6ae1c2297a54' // Snyk API Token ID in Jenkins credentials
     }
 
     stages {
