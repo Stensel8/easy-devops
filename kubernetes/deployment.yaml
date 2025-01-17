@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: easy-devops-deployment
+  labels:
+    app: easy-devops
+spec:
+  replicas: 3  # Ensures redundancy; 3 pods will run simultaneously
+  selector:
+    matchLabels:
+      app: easy-devops
+  template:
+    metadata:
+      labels:
+        app: easy-devops
+    spec:
+      containers:
+      - name: easy-devops
+        image: stensel8student/easy-devops:latest
+        ports:
+        - containerPort: 80  # Port on which the application listens
+        resources:
+          requests:
+            memory: "64Mi"  # Minimum memory required for the container
+            cpu: "250m"  # Minimum CPU required for the container
+          limits:
+            memory: "128Mi"  # Maximum memory the container can use
+            cpu: "500m"  # Maximum CPU the container can use
+        livenessProbe:
+          httpGet:
+            path: /  # Checks if the application is running
+            port: 80
+          initialDelaySeconds: 5  # Waits 5 seconds before starting the liveness check
+          periodSeconds: 10  # Performs the check every 10 seconds
+        readinessProbe:
+          httpGet:
+            path: /  # Checks if the application is ready to accept requests
+            port: 80
+          initialDelaySeconds: 5  # Waits 5 seconds before starting the readiness check
+          periodSeconds: 10  # Performs the check every 10 seconds
+        imagePullPolicy: Always  # Always pull the latest image from Docker Hub

@@ -50,3 +50,38 @@ A simple and user-friendly application designed for technical management and mon
    ```bash
    dotnet run
 ---
+
+# Docker/Kubernetes Containerization (New/Beta)
+
+This application can be built and packaged as a container for use with Docker and Kubernetes. 
+
+**To get started:**
+
+1. **Navigate to the scripts folder:**
+
+   ```bash
+   cd scripts
+   ```
+2. **Choose the desired action:**
+- Build the application:
+
+   ```bash
+   python devops.py build
+   ```
+- Create the image:
+
+   ```bash
+   python devops.py dockerize
+   ```
+- Run the container:
+
+   ```bash
+   python devops.py run
+   ```
+- Run all steps (build, dockerize, and run):
+
+   ```bash
+   python devops.py all
+   ```
+3. **Deploy to Kubernetes (optional):**
+Refer to the kubernetes/ folder for deployment configurations (e.g., deployment.yaml) to deploy the application on a Kubernetes cluster.
