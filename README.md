@@ -29,7 +29,7 @@ A simple and user-friendly application designed for technical management and mon
 - **Git**: Ensure Git is installed on your system. [Download Git](https://git-scm.com) if needed.
 - **Jenkins (optional)**: Set up Jenkins to explore CI/CD basics with this app. [Learn more about Jenkins](https://www.jenkins.io/).
 
-### Manual Installation
+### Auto Installation
 - For automatic deployment, you can run the pre-defined powershell-file:
    ```bash
    .\scripts\install.ps1
