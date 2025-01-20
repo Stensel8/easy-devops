@@ -55,6 +55,13 @@ A simple and user-friendly application designed for technical management and mon
 
 This application can be built and packaged as a container for use with Docker and Kubernetes. 
 
+# Run the predefined image:
+   ```bash
+docker run stensel8student/easy-devops:latest
+   ```
+
+Alternatively, you can build one yourself...
+
 **To get started:**
 
 1. **Navigate to the scripts folder:**
