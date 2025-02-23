@@ -1,6 +1,6 @@
 # Easy-DevOps App
 
-A simple and user-friendly application designed for technical management and monitoring. Developed as a school project to demonstrate the basic principles of DevOps and Jenkins basics.
+A simple concept application for technical management and system monitoring. Built during my studies to explore and demonstrate DevOps concepts and Jenkins basics. This is a school/test project and should not be taken seriously. Contributions and feedback are welcome!
 
 > **Note**: This application is not intended for production use. It serves as a demonstration and learning tool for DevOps practices and Jenkins pipeline basics.
 
@@ -8,16 +8,14 @@ A simple and user-friendly application designed for technical management and mon
 
 ## Features
 
-- **Welcome Print**: A simple welcome message similar to the classic "Hello, World!".
-- **Live Clock**: Displays the current time, updated every 5 seconds.
-- **Response Times**: Real-time ping response times to well-known domains:
+- **Welcome Print**: Displays a welcome message (like "Hello, World!").
+- **Live Clock**: Shows the current time, updated every 5 seconds.
+- **Response Times**: Provides real-time ping response times for domains such as:
   - Google
   - GitHub
   - Microsoft
-- **DevOps and Jenkins Basics**: Built to help beginners:
-  - Learn DevOps practices, such as CI/CD.
-  - Understand Jenkins pipelines, stages, and basic API integrations.
-- **Educational Focus**: Ideal for introducing DevOps concepts to beginners.
+- **DevOps & Jenkins Basics**: Helps beginners learn CI/CD and understand Jenkins pipelines.
+- **Educational Focus**: Ideal for introducing DevOps concepts to students.
 
 ---
 
@@ -25,36 +23,48 @@ A simple and user-friendly application designed for technical management and mon
 
 ### Prerequisites
 
-- **.NET SDK**: [Download and install .NET SDK](https://dotnet.microsoft.com/download) (version 8.0 or later is recommended).
+- **.NET SDK**: [Download .NET SDK](https://dotnet.microsoft.com/download) (version 8.0 or later is recommended).
 - **Git**: Ensure Git is installed on your system. [Download Git](https://git-scm.com) if needed.
-- **Jenkins (optional)**: Set up Jenkins to explore CI/CD basics with this app. [Learn more about Jenkins](https://www.jenkins.io/).
+- **Jenkins (optional)**: For exploring CI/CD basics. [Learn more about Jenkins](https://www.jenkins.io/).
 
 ### Auto Installation
+<<<<<<< Updated upstream
 - For automatic deployment, you can run the pre-defined powershell-file:
    ```bash
    .\scripts\install.ps1
 ---
+=======
+
+For automatic deployment, run the pre-defined PowerShell file:
+
+    .\scripts\install.ps1
+>>>>>>> Stashed changes
 
 ### Manual Installation
 
-1. Clone this repository:
-   ```bash
-   git clone https://github.com/stensel8/easy-devops.git
+1. Clone the repository:
+
+       git clone https://github.com/stensel8/easy-devops.git
+
 2. Navigate to the project directory:
-   ```bash
-   cd easy-devops/frontend
+
+       cd easy-devops/frontend
+
 3. Build the application:
-   ```bash
-   dotnet build
+
+       dotnet build
+
 4. Run the application:
-   ```bash
-   dotnet run
+
+       dotnet run
+
 ---
 
-# Docker/Kubernetes Containerization (New/Beta)
+## Docker/Kubernetes Containerization (New/Beta)
 
-This application can be built and packaged as a container for use with Docker and Kubernetes. 
+This app can be built and packaged as a container for use with Docker and Kubernetes.
 
+<<<<<<< Updated upstream
 # Run the predefined image:
    ```bash
 docker run stensel8student/easy-devops:latest
@@ -63,32 +73,74 @@ docker run stensel8student/easy-devops:latest
 Alternatively, you can build one yourself...
 
 **To get started:**
+=======
+### [Running the Predefined Image](https://hub.docker.com/r/stensel8/easy-devops)
+>>>>>>> Stashed changes
 
-1. **Navigate to the scripts folder:**
+    docker run stensel8/easy-devops:latest
+    
+> **Note**: Running without the `-it` flag may result in no color output. For colored output, use:
 
-   ```bash
-   cd scripts
-   ```
-2. **Choose the desired action:**
-- Build the application:
+    docker run -it stensel8/easy-devops:latest
 
-   ```bash
-   python devops.py build
-   ```
-- Create the image:
+### Building and Running Locally via Scripts
 
-   ```bash
-   python devops.py dockerize
-   ```
-- Run the container:
+1. Navigate to the scripts folder:
 
-   ```bash
-   python devops.py run
-   ```
-- Run all steps (build, dockerize, and run):
+       cd scripts
 
-   ```bash
-   python devops.py all
-   ```
-3. **Deploy to Kubernetes (optional):**
-Refer to the kubernetes/ folder for deployment configurations (e.g., deployment.yaml) to deploy the application on a Kubernetes cluster.
+2. Choose an action:
+   - Build the application:
+
+         python devops.py build
+   
+   - Build the application (EXE for Windows):
+
+         python devops.py build-exe
+
+
+   - Create the Docker image:
+
+         python devops.py dockerize
+
+   - Run the container:
+
+         python devops.py run
+
+   - Run all steps (build, dockerize, and run):
+
+         python devops.py all
+
+### Deploying to Kubernetes (Optional)
+
+Refer to the **kubernetes/** folder for deployment configurations (e.g., `deployment.yaml`) to deploy the app on a Kubernetes cluster.
+
+---
+
+## Why Does the App Lose Color in Docker?
+
+![Colored Run](docs/img/colored-run.png)
+![Non-Colored Run](docs/img/non-colored-run.png)
+
+
+By default, Docker does not allocate an interactive terminal unless you specify the `-it` flags.
+
+- When you run the container with:
+
+      docker run stensel8/easy-devops:latest
+
+  Docker does not create a pseudo-TTY, so color codes may not be displayed.
+
+- To see the colored ASCII art and text, run:
+
+      docker run -it stensel8/easy-devops:latest
+
+  The `-it` flag allocates a pseudo-TTY and keeps stdin open, enabling ANSI color codes.
+
+Locally, running the app with:
+
+      dotnet run
+
+always shows color, as your terminal supports ANSI color by default.
+
+___

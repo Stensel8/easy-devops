@@ -1,12 +1,21 @@
-# Base image
-FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
+FROM ubuntu:24.10
+
 WORKDIR /app
 
-# Copy published files
-COPY out/ .
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    iputils-ping libicu74 tzdata && \
+    ln -snf /usr/share/zoneinfo/Europe/Amsterdam /etc/localtime && \
+    echo "Europe/Amsterdam" > /etc/timezone && \
+    rm -rf /var/lib/apt/lists/*
 
-# Expose port
-EXPOSE 80
+# Copy the self-contained binaries into the image
+COPY out/docker/ .
 
-# Start the application
-ENTRYPOINT ["dotnet", "easy-devops.dll"]
+# Set up the directory for .NET single-file bundle extraction
+ENV DOTNET_BUNDLE_EXTRACT_BASE_DIR=/tmp/dotnetbundle
+RUN mkdir -p /tmp/dotnetbundle && chmod -R 777 /tmp/dotnetbundle
+
+# Set terminal type to support ANSI colors
+ENV TERM=xterm-256color
+
+ENTRYPOINT ["/app/easy-devops"]

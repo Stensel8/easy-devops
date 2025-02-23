@@ -1,32 +1,40 @@
+using System;
 using System.Net.NetworkInformation;
-using System.Drawing;
-using Console = Colorful.Console;
+using System.Text;
+using System.Threading;
+
+static class MyColors
+{
+    // Using standard ConsoleColor values to approximate your desired colors:
+    public const ConsoleColor Teal = ConsoleColor.Cyan;
+    public const ConsoleColor BrightGreen = ConsoleColor.Green;   // Bright green
+    public const ConsoleColor BrightYellow = ConsoleColor.Yellow; // Bright yellow
+    public const ConsoleColor White = ConsoleColor.White;         // White
+}
 
 class Program
 {
     static void Main(string[] args)
     {
+        // Ensure the console uses UTF8 encoding.
+        Console.OutputEncoding = Encoding.UTF8;
+
         while (true)
         {
             Console.Clear();
 
-            // Print ASCII art logo
             PrintAsciiArtLogo();
-
-            // Print the banner
             PrintRainbowText("Case Study ITM");
             PrintRainbowText("Developed by Sten Tijhuis");
             PrintRainbowText("Student ID: 550600");
-            PrintRainbowText("Version V1.0");
+            PrintRainbowText("Version V1.1.1");
 
-            Console.WriteLine("\nWelcome to Easy-DevOps!", Color.White);
-            Console.WriteLine("\nITM-550600\n", Color.White);
+            WriteColoredLine("\nWelcome to Easy-DevOps!", MyColors.BrightGreen);
+            WriteColoredLine("\nITM-550600\n", MyColors.White);
 
-            // Display the current time (hours and minutes only)
             string time = DateTime.Now.ToString("HH:mm");
-            Console.WriteLine($"Current Time: {time}", Color.LightGreen);
+            WriteColoredLine($"Current Time: {time}", MyColors.BrightGreen);
 
-            // Display ping results
             DisplayPing();
 
             // Refresh every 10 seconds
@@ -34,58 +42,69 @@ class Program
         }
     }
 
+    static void WriteColoredLine(string text, ConsoleColor color)
+    {
+        Console.ForegroundColor = color;
+        Console.WriteLine(text);
+        Console.ResetColor();
+    }
+
     static void DisplayPing()
     {
         string[] domains = { "mooindag.nl", "stentijhuis.nl", "google.com", "github.com", "microsoft.com", "www.saxion.nl" };
 
-        Console.WriteLine("\nLive Response Times:", Color.Yellow);
+        WriteColoredLine("\nLive Response Times:", MyColors.BrightYellow);
 
         foreach (string domain in domains)
         {
             try
             {
-                Ping ping = new Ping();
-                PingReply reply = ping.Send(domain);
-
-                if (reply.Status == IPStatus.Success)
+                using (Ping ping = new Ping())
                 {
-                    Console.WriteLine($"  {domain}: {reply.RoundtripTime} ms", Color.Cyan);
-                }
-                else
-                {
-                    Console.WriteLine($"  {domain}: Unreachable", Color.Red);
+                    PingReply reply = ping.Send(domain);
+                    if (reply.Status == IPStatus.Success)
+                    {
+                        WriteColoredLine($"  {domain}: {reply.RoundtripTime} ms", MyColors.BrightGreen);
+                    }
+                    else
+                    {
+                        WriteColoredLine($"  {domain}: Unreachable", ConsoleColor.Red);
+                    }
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"  {domain}: Error ({ex.Message})", Color.Red);
+                WriteColoredLine($"  {domain}: Error ({ex.Message})", ConsoleColor.Red);
             }
         }
     }
 
     static void PrintRainbowText(string text)
     {
-        // Define smooth rainbow colors
-        Color[] rainbowColors = {
-            Color.Red, Color.OrangeRed, Color.Orange,
-            Color.Yellow, Color.GreenYellow, Color.Green,
-            Color.Blue, Color.Indigo, Color.Violet
+        // Approximate a rainbow using available ConsoleColors.
+        ConsoleColor[] rainbowColors = {
+            ConsoleColor.Red,
+            ConsoleColor.Magenta,
+            ConsoleColor.Yellow,
+            ConsoleColor.Green,
+            ConsoleColor.Cyan,
+            ConsoleColor.Blue,
+            ConsoleColor.DarkMagenta
         };
 
         int colorIndex = 0;
         foreach (char c in text)
         {
-            // Print each character with a rainbow color
-            Console.Write(c, rainbowColors[colorIndex]);
+            Console.ForegroundColor = rainbowColors[colorIndex];
+            Console.Write(c);
             colorIndex = (colorIndex + 1) % rainbowColors.Length;
         }
-
-        Console.WriteLine(); // Move to the next line after the text
+        Console.ResetColor();
+        Console.WriteLine();
     }
 
     static void PrintAsciiArtLogo()
     {
-        // ASCII art logo for "ITM CASE"
         string[] logoLines = {
             " __  .___________..___  ___.      ______     ___           _______. _______ ",
             "|  | |           ||   \\/   |     /      |   /   \\         /       ||   ____|",
@@ -98,9 +117,8 @@ class Program
 
         foreach (string line in logoLines)
         {
-            Console.WriteLine(line, Color.Cyan); // Use Cyan for the logo
+            WriteColoredLine(line, MyColors.Teal);
         }
-
-        Console.WriteLine(); // Add spacing after the logo
+        Console.WriteLine();
     }
 }

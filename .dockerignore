@@ -1,0 +1,8 @@
+bin
+objs
+out/
+!out/docker/
+.git
+.gitignore
+*.user
+*.suo

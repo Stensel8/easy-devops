@@ -6,6 +6,13 @@ frontend/easy-devops/obj/Debug/
 bin/
 obj/
 
+# Output files
+out/
+dist/
+build/
+builds/
+app/
+
 # User-specific files
 .vs/
 .idea/
