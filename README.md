@@ -28,17 +28,10 @@ A simple concept application for technical management and system monitoring. Bui
 - **Jenkins (optional)**: For exploring CI/CD basics. [Learn more about Jenkins](https://www.jenkins.io/).
 
 ### Auto Installation
-<<<<<<< Updated upstream
-- For automatic deployment, you can run the pre-defined powershell-file:
-   ```bash
-   .\scripts\install.ps1
----
-=======
 
 For automatic deployment, run the pre-defined PowerShell file:
 
     .\scripts\install.ps1
->>>>>>> Stashed changes
 
 ### Manual Installation
 
@@ -64,18 +57,7 @@ For automatic deployment, run the pre-defined PowerShell file:
 
 This app can be built and packaged as a container for use with Docker and Kubernetes.
 
-<<<<<<< Updated upstream
-# Run the predefined image:
-   ```bash
-docker run stensel8student/easy-devops:latest
-   ```
-
-Alternatively, you can build one yourself...
-
-**To get started:**
-=======
-### [Running the Predefined Image](https://hub.docker.com/r/stensel8/easy-devops)
->>>>>>> Stashed changes
+### Running the Predefined Image
 
     docker run stensel8/easy-devops:latest
     
@@ -97,7 +79,6 @@ Alternatively, you can build one yourself...
    - Build the application (EXE for Windows):
 
          python devops.py build-exe
-
 
    - Create the Docker image:
 
@@ -122,7 +103,6 @@ Refer to the **kubernetes/** folder for deployment configurations (e.g., `deploy
 ![Colored Run](docs/img/colored-run.png)
 ![Non-Colored Run](docs/img/non-colored-run.png)
 
-
 By default, Docker does not allocate an interactive terminal unless you specify the `-it` flags.
 
 - When you run the container with:
@@ -142,5 +122,3 @@ Locally, running the app with:
       dotnet run
 
 always shows color, as your terminal supports ANSI color by default.
-
-___
