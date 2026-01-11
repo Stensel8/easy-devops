@@ -54,6 +54,7 @@ pipeline {
         stage('Publish') {
             steps {
                 pwsh """
+                    # Windows self-contained executable
                     dotnet publish ${env.DOTNET_PROJECT} `
                         -c Release `
                         -r win-x64 `
