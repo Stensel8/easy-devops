@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         DOTNET_PROJECT = 'frontend/easy-devops.csproj'
-        SNYK_TOKEN_ID = 'snyk-api-token'
+        SNYK_TOKEN_ID = 'c689a390-678f-4ba8-973c-36314ee63f33'
     }
 
     stages {
