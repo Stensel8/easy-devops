@@ -1,9 +1,5 @@
 pipeline {
     agent any
-    
-    tools {
-        dotnetsdk 'dotnet-8'  // Matches name in Jenkins Tools config
-    }
 
     environment {
         DOTNET_PROJECT = 'frontend/easy-devops.csproj'
