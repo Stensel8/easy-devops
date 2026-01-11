@@ -1,5 +1,10 @@
 # Easy-DevOps App
 
+[![Build Status](docs/img/jenkins-status.svg)](https://jenkins.stensel.nl/job/easy-devops/)
+[![Snyk Security](https://snyk.io/test/github/Stensel8/easy-devops/badge.svg)](https://snyk.io/test/github/Stensel8/easy-devops)
+[![.NET](https://img.shields.io/badge/.NET-8.0-512BD4?logo=dotnet)](https://dotnet.microsoft.com/)
+[![License](https://img.shields.io/badge/License-Educational-blue.svg)](LICENSE)
+
 A simple application for technical management and system monitoring. Built to demonstrate DevOps concepts and Jenkins basics. This is a school/test project, not for production use. Contributions welcome!
 
 ## Features

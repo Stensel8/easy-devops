@@ -1,7 +1,8 @@
 using System;
-using System.Net.NetworkInformation;
+using System.Net.Http;
 using System.Text;
 using System.Threading;
+using System.Diagnostics;
 
 static class MyColors
 {
@@ -51,7 +52,7 @@ class Program
 
     static void DisplayPing()
     {
-        string[] domains = { "mooindag.nl", "stentijhuis.nl", "google.com", "github.com", "microsoft.com", "www.saxion.nl", "uptime.stensel.cloud" };
+        string[] domains = { "stentijhuis.nl", "google.com", "github.com", "microsoft.com", "www.saxion.nl", "uptime.stensel.cloud" };
 
         WriteColoredLine("\nLive Response Times:", MyColors.BrightYellow);
 
@@ -59,16 +60,23 @@ class Program
         {
             try
             {
-                using (Ping ping = new Ping())
+                var stopwatch = Stopwatch.StartNew();
+                using (var httpClient = new HttpClient())
                 {
-                    PingReply reply = ping.Send(domain);
-                    if (reply.Status == IPStatus.Success)
+                    httpClient.Timeout = TimeSpan.FromSeconds(5);
+                    var response = httpClient.GetAsync($"https://{domain}").Result;
+                    stopwatch.Stop();
+                    
+                    int statusCode = (int)response.StatusCode;
+                    string statusText = response.ReasonPhrase ?? "OK";
+                    
+                    if (response.IsSuccessStatusCode)
                     {
-                        WriteColoredLine($"  {domain}: {reply.RoundtripTime} ms", MyColors.BrightGreen);
+                        WriteColoredLine($"  {domain}: {stopwatch.ElapsedMilliseconds} ms (HTTP {statusCode})", MyColors.BrightGreen);
                     }
                     else
                     {
-                        WriteColoredLine($"  {domain}: Unreachable", ConsoleColor.Red);
+                        WriteColoredLine($"  {domain}: {stopwatch.ElapsedMilliseconds} ms (HTTP {statusCode} {statusText})", ConsoleColor.Yellow);
                     }
                 }
             }

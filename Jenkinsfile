@@ -40,7 +40,8 @@ pipeline {
                             snykTokenId: env.SNYK_TOKEN_ID,
                             additionalArguments: '--all-projects',
                             severity: 'medium',
-                            failOnIssues: false
+                            failOnIssues: false,
+                            monitorProjectOnBuild: false
                         )
                     } catch (Exception e) {
                         echo "Snyk scan failed: ${e.message}"
