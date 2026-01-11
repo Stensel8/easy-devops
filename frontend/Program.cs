@@ -22,7 +22,16 @@ class Program
 
         while (true)
         {
-            Console.Clear();
+            // Clear screen - works in both Windows and Docker
+            if (OperatingSystem.IsWindows())
+            {
+                Console.Clear();
+            }
+            else
+            {
+                // ANSI escape code to clear screen and move cursor to top
+                Console.Write("\x1b[2J\x1b[H");
+            }
 
             PrintAsciiArtLogo();
             PrintRainbowText("Case Study ITM");
