@@ -27,7 +27,7 @@ class Program
             PrintRainbowText("Case Study ITM");
             PrintRainbowText("Developed by Sten Tijhuis");
             PrintRainbowText("Student ID: 550600");
-            PrintRainbowText("Version V1.1.1");
+            PrintRainbowText("Version V1.1.2");
 
             WriteColoredLine("\nWelcome to Easy-DevOps!", MyColors.BrightGreen);
             WriteColoredLine("\nITM-550600\n", MyColors.White);
@@ -51,7 +51,7 @@ class Program
 
     static void DisplayPing()
     {
-        string[] domains = { "mooindag.nl", "stentijhuis.nl", "google.com", "github.com", "microsoft.com", "www.saxion.nl" };
+        string[] domains = { "mooindag.nl", "stentijhuis.nl", "google.com", "github.com", "microsoft.com", "www.saxion.nl", "uptime.stensel.cloud" };
 
         WriteColoredLine("\nLive Response Times:", MyColors.BrightYellow);
 

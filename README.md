@@ -5,8 +5,8 @@ A simple application for technical management and system monitoring. Built to de
 ## Features
 
 - Welcome message display
-- Live clock updating every 5 seconds
-- Real-time ping response times for Google, GitHub, and Microsoft
+- Live clock updating every 10 seconds
+- Real-time ping response times for multiple domains (Google, GitHub, Microsoft, Saxion, and custom domains)
 - Educational tool for DevOps and Jenkins CI/CD basics
 
 ## Prerequisites

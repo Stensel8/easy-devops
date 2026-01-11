@@ -1,12 +1,14 @@
-FROM ubuntu:24.10
+FROM alpine:latest
 
 WORKDIR /app
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    iputils-ping libicu74 tzdata && \
-    ln -snf /usr/share/zoneinfo/Europe/Amsterdam /etc/localtime && \
+RUN apk add --no-cache \
+    iputils \
+    icu-libs \
+    tzdata && \
+    cp /usr/share/zoneinfo/Europe/Amsterdam /etc/localtime && \
     echo "Europe/Amsterdam" > /etc/timezone && \
-    rm -rf /var/lib/apt/lists/*
+    apk del tzdata
 
 # Copy the self-contained binaries into the image
 COPY out/docker/ .

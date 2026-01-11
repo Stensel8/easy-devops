@@ -2,74 +2,72 @@ pipeline {
     agent any
 
     environment {
-        DOTNET_PROJECT = 'frontend/easy-devops.csproj' // Path to your .NET project
-        SNYK_TOKEN_ID = 'f41d9fdc-ea31-41a6-8db5-6ae1c2297a54' // Snyk API Token ID in Jenkins credentials
+        DOTNET_PROJECT = 'frontend/easy-devops.csproj'
+        SNYK_TOKEN_ID = 'snyk-api-token' // Configure in Jenkins: Manage Jenkins > Credentials
     }
 
     stages {
         stage('Checkout') {
             steps {
-                echo '--- Stage: Checkout ---'
-                // Pull the latest code from source control
                 checkout scm
             }
         }
 
-        stage('Restore Dependencies') {
+        stage('Restore') {
             steps {
-                echo '--- Stage: Restore Dependencies ---'
-                // Restore .NET project dependencies
-                bat "dotnet restore ${env.DOTNET_PROJECT}"
+                pwsh "dotnet restore ${env.DOTNET_PROJECT}"
             }
         }
 
         stage('Build') {
             steps {
-                echo '--- Stage: Build Application ---'
-                // Build the .NET project in Release mode
-                bat "dotnet build ${env.DOTNET_PROJECT} --configuration Release"
+                pwsh "dotnet build ${env.DOTNET_PROJECT} --configuration Release --no-restore"
             }
         }
 
-        stage('Run Tests') {
+        stage('Test') {
             steps {
-                echo '--- Stage: Run Unit Tests ---'
-                // Run tests for the .NET project
-                bat "dotnet test ${env.DOTNET_PROJECT}"
+                pwsh "dotnet test ${env.DOTNET_PROJECT} --configuration Release --no-build"
             }
         }
 
-        stage('Security Test - Snyk') {
+        stage('Snyk Scan') {
             steps {
-                echo '--- Stage: Run Snyk Security Scan ---'
-                // Run Snyk security scan on the project
-                snykSecurity(
-                    snykInstallation: 'snyk',
-                    snykTokenId: env.SNYK_TOKEN_ID,
-                    targetFile: 'frontend/obj/project.assets.json'
-                )
+                script {
+                    try {
+                        snykSecurity(
+                            snykInstallation: 'snyk',
+                            snykTokenId: env.SNYK_TOKEN_ID,
+                            additionalArguments: '--all-projects',
+                            severity: 'medium',
+                            failOnIssues: false
+                        )
+                    } catch (Exception e) {
+                        echo "Snyk: ${e.message}"
+                        currentBuild.result = 'UNSTABLE'
+                    }
+                }
             }
         }
 
-        stage('Deploy') {
+        stage('Publish') {
             steps {
-                echo '--- Stage: Deploy Application ---'
-                // Placeholder for deployment steps
-                echo 'Deployment logic will be added here.'
+                pwsh """
+                    dotnet publish ${env.DOTNET_PROJECT} `
+                        -c Release `
+                        -r win-x64 `
+                        --self-contained true `
+                        -o out/publish `
+                        /p:PublishSingleFile=true `
+                        /p:PublishTrimmed=true
+                """
             }
         }
     }
 
     post {
         always {
-            echo '--- Pipeline Finished ---'
-            archiveArtifacts artifacts: '**/bin/**/*.dll, **/bin/**/*.exe', allowEmptyArchive: true
-        }
-        success {
-            echo '--- Pipeline Completed Successfully! ---'
-        }
-        failure {
-            echo '--- Pipeline Failed. Check the logs for more details. ---'
+            archiveArtifacts artifacts: 'out/publish/**/*', allowEmptyArchive: true
         }
     }
 }

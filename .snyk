@@ -1,0 +1,13 @@
+# Snyk (https://snyk.io) policy file
+version: v1.25.0
+
+# Ignore rules for known issues
+ignore: {}
+
+# Patch rules
+patch: {}
+
+# Language settings
+language-settings:
+  dotnet:
+    targetFramework: net8.0

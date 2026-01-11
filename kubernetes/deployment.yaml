@@ -6,6 +6,7 @@ metadata:
   name: easy-devops-deployment
   labels:
     app: easy-devops
+    version: v1.1.2
 spec:
   replicas: 1
   selector:
@@ -15,19 +16,50 @@ spec:
     metadata:
       labels:
         app: easy-devops
+        version: v1.1.2
     spec:
       terminationGracePeriodSeconds: 5
+      securityContext:
+        runAsNonRoot: true
+        runAsUser: 1000
+        fsGroup: 1000
+        seccompProfile:
+          type: RuntimeDefault
       containers:
       - name: easy-devops
         image: stensel8/easy-devops:latest
+        securityContext:
+          allowPrivilegeEscalation: false
+          runAsNonRoot: true
+          runAsUser: 1000
+          capabilities:
+            drop:
+              - ALL
+          readOnlyRootFilesystem: false
         resources:
           requests:
             memory: "32Mi"
             cpu: "100m"
           limits:
-            memory: "64Mi"
+            memory: "128Mi"
             cpu: "250m"
         imagePullPolicy: Always
+        livenessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - pgrep -f easy-devops
+          initialDelaySeconds: 10
+          periodSeconds: 30
+        readinessProbe:
+          exec:
+            command:
+            - /bin/sh
+            - -c
+            - pgrep -f easy-devops
+          initialDelaySeconds: 5
+          periodSeconds: 10
         command: ["/app/easy-devops"]
         securityContext:
           runAsNonRoot: true
