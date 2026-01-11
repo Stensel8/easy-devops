@@ -1,9 +1,13 @@
 pipeline {
     agent any
+    
+    tools {
+        dotnetsdk 'dotnet-8'  // Matches name in Jenkins Tools config
+    }
 
     environment {
         DOTNET_PROJECT = 'frontend/easy-devops.csproj'
-        SNYK_TOKEN_ID = 'snyk-api-token' // Configure in Jenkins: Manage Jenkins > Credentials
+        SNYK_TOKEN_ID = 'snyk-api-token'
     }
 
     stages {
@@ -43,7 +47,7 @@ pipeline {
                             failOnIssues: false
                         )
                     } catch (Exception e) {
-                        echo "Snyk: ${e.message}"
+                        echo "Snyk scan failed: ${e.message}"
                         currentBuild.result = 'UNSTABLE'
                     }
                 }
