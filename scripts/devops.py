@@ -3,7 +3,7 @@ import subprocess
 import sys
 
 # Project details
-DOCKER_IMAGE_NAME = "stensel8/easy-devops:latest"
+DOCKER_IMAGE_NAME = "stensel8/easy-devops:1.1.3"
 DOCKER_CONTAINER_NAME = "easy-devops-container"
 PROJECT_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 CS_PROJECT_PATH = os.path.join(PROJECT_DIR, "frontend", "easy-devops.csproj")
@@ -67,7 +67,7 @@ def main(action):
     elif action == "build-exe":
         build_dotnet_exe()
     elif action == "dockerize":
-        build_dotnet_app()
+        # Docker multi-stage build handles everything
         build_docker_image()
     elif action == "run":
         run_docker_container()
